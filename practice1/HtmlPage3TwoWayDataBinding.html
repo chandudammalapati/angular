@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html ng-app="myModule">
+<head>
+    <script src="lib\angular\angular.js"></script>
+
+    <script src="script\myscript.js"></script>
+</head>
+<body>
+    <div ng-controller="myTwoWayDataBind">
+        <table>
+            <tr>
+                <td>First Name</td>
+                <td><input type="text" ng-model="emp.firstName"/></td>
+            </tr>
+            <tr>
+                <td>Last Name</td>
+                <td><input type="text" ng-model="emp.lastName" /></td>
+            </tr>
+            <tr>
+                <td>Gender</td>
+                <td><input type="text" ng-model="emp.gender" /></td>
+            </tr>
+
+        </table>
+
+        <table border="1">
+            <tr>
+                <td>First Name</td>
+                <td>{{emp.firstName}}</td>
+            </tr>
+            <tr>
+                <td>Last Name</td>
+                <td>{{emp.lastName}}</td>
+            </tr>
+            <tr>
+                <td>Gender</td>
+                <td>{{emp.gender}}</td>
+            </tr>
+
+        </table>
+
+    </div>
+</body>
+</html>

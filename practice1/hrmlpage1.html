@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="myModule">
 	<head>
 	<script src="lib\angular\angular.js"></script>
 	
@@ -7,8 +7,16 @@
 	</head>
 
 	<body>
-		<div>
-			
+		<div ng-controller="myController">
+            <div>
+                First Name : {{emp.firstName}}
+            </div>
+            <div>
+                Last Name : {{emp.lastName}}
+            </div>
+            <div>
+                Gender : {{emp.gender}}
+            </div>
 		</div>
 	
 	</body>

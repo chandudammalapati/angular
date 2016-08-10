@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html ng-app="myModule">
+<head>
+    <script src="lib\angular\angular.js"></script>
+
+    <script src="script\myscript.js"></script>
+    
+</head>
+<body style="font-family:Arial">
+    <div ng-controller="myNgRepeatFun">
+        <table>
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Gender</th>
+                    <th>Salary</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="employee in empRecords">
+                    <td>{{employee.firstName}}</td>
+                    <td>{{employee.lastName}}</td>
+                    <td>{{employee.gender}}</td>
+                    <td>{{employee.salary}}</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <ul>
+            <li ng-repeat="country in countriesArry">
+                {{country.name}} - Index ={{$index}}
+                <ul>
+                    <li ng-repeat="city in country.cities">
+                        {{city.name}} - Parent Index = {{$parent.$index}}, - Index = {{$index}}
+                    </li>
+                </ul>
+
+            </li>
+        </ul>
+                    
+    </div>
+    
+</body>
+</html>
