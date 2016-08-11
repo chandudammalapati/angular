@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html ng-app="myModule">
+<head>
+    <script src="lib\angular\angular.js"></script>
+
+    <script src="script\myscript.js"></script>
+
+    <script src="script/filters.js"></script>
+
+    <link href="css/style.css" rel="stylesheet" />
+</head>
+<body>
+    <div ng-controller="myFilterController">
+        Search : <input type="text" ng-model="searchText" placeholder="Search Name and City"/> &nbsp;
+       
+
+        <br/><br/>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>City</th>
+                    <th>Gender</th>
+                    <th>Salary</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="employee in empArry | filter:search">
+                    <td>{{employee.name}}</td>
+                    <td>{{employee.city}}</td>
+                    <td>{{employee.gender}}</td>
+                    <td>{{employee.salary}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br/><br/>
+        Creating custom Filter:
+        <br/><br/>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Salary</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="emp in empCusArry">
+                    <td>{{emp.name}}</td>
+                    <td>{{emp.gender | gender}}</td>
+                    <td>{{emp.salary}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</body>
+</html>

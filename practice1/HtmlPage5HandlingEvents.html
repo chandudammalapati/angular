@@ -5,10 +5,11 @@
 
     <script src="script\myscript.js"></script>
 
+    <link href="css/style.css" rel="stylesheet" />
 </head>
 <body>
     <div ng-controller="myEventHandling">
-        <table border="1">
+        <table >
             <thead>
                 <tr>
                     <th>Name</th>
@@ -29,6 +30,94 @@
                 </tr>
             </tbody>
         </table>
+
+        <br/><br/>
+        Rows to Display: <input type="number" step="1" min="0" max="5" ng-model="rowLimit"/>
+        <br/><br />
+        <table >
+            <thead>
+                <tr>
+                    <th>Name Of Employee</th>
+                    <th>Date Of Birth</th>
+                    <th>Gender</th>
+                    <th>Salary(number)</th>
+                    <th>salary(currency)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="employee in empRecords | limitTo:rowLimit">
+                    <td>{{employee.name | uppercase}}</td>
+                    <td>{{employee.dateOfBirth | date:"MM/dd/yyyy"}}</td>
+                    <td>{{employee.gender | lowercase}}</td>
+                    <td>{{employee.salary | number:2}}</td>
+                    <td>{{employee.salary | currency:"£":1}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br/><br/>
+        Sorting Data using Filters
+        <br/><br/>
+        Order By: <select ng-model="sortColumn">
+                      <option value="name">Name ASC</option>
+                      <option value="dateOfBirth">DOB ASC</option>
+                      <option value="gender">Gender ASC</option>
+                      <option value="-salary">Salary DEC</option>
+                  </select>
+        <br /> <br/>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Date Of Birth</th>
+                    <th>Gender</th>
+                    <th>Salary</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="employee in empRecords | orderBy:sortColumn">
+                    <td>{{employee.name}}</td>
+                    <td>{{employee.dateOfBirth | date:"MM/dd/yyyy"}}</td>
+                    <td>{{employee.gender}}</td>
+                    <td>{{employee.salary}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br/><br/>
+        sort rows by table header click event
+        <br/><br/>
+        Search: <input type="text" placeholder="Search employees" ng-model="searchTextVal" />
+
+        <br/><br/>
+        <table>
+            <thead>
+                <tr>
+                    <th ng-click="sortData('name')">
+                        Name <div ng-class="getSortClass('name')"></div>
+                    </th>
+                    <th ng-click="sortData('dateOfBirth')">
+                    Date Of Birth <div ng-class="getSortClass('dateOfBirth')"></div>
+                    </th>
+                    <th ng-click="sortData('gender')">
+                    Gender <div ng-class="getSortClass('gender')"></div>
+                    </th>
+                    <th ng-click="sortData('salary')">
+                    Salary <div ng-class="getSortClass('salary')"></div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="employee in empRecords | filter:searchTextVal | orderBy:sortColumn:reverseSort ">
+                    <td>{{employee.name}}</td>
+                    <td>{{employee.dateOfBirth | date:"MM/dd/yyyy"}}</td>
+                    <td>{{employee.gender}}</td>
+                    <td>{{employee.salary}}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
+
+ 
+
 </body>
 </html>
