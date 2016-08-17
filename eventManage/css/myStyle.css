@@ -1,0 +1,232 @@
+﻿body {
+    border: 5px solid rgba(155, 89, 182, 0.5);
+    
+    -moz-background-clip: padding-box;    
+    background-clip: padding-box; 
+    height:850px;
+    border-radius:10px;
+}
+
+#divFirst{
+    width:45%;
+    left: 13px;
+    border-radius:10px 0px 0px 10px;
+}
+
+#divSecond{
+    width:55%;
+    right:13px;
+    border-radius:0px 10px 10px 0px;
+}
+
+.mainDiv{
+    position: absolute;
+    height:inherit;
+    background: -webkit-linear-gradient(left, rgb(145, 144, 155) , rgb(247, 245, 248)); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(right, rgb(145, 144, 155) , rgb(247, 245, 248)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(right, rgb(145, 144, 155) , rgb(247, 245, 248)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to right, rgb(145, 144, 155) , rgb(247, 245, 248)); /* Standard syntax */   
+    
+}
+#searchbox{
+    position: absolute;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(105, 104, 118, 0.5));
+    
+    overflow:hidden;
+    left: 13%;
+    top: 20%;
+    width: 65%;
+    border-radius: 30px;    
+    border-width: 1px;
+    border-style: solid;
+    background-color: #eaf8fc;
+    height: 35px;
+    padding: 10px;
+    margin: 100px auto 50px;
+}
+.searchBox{
+    padding: 5px 9px;
+    height: 23px;
+    width:65%;
+    background: rgba(241, 241, 241, 0.9);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
+    border-radius: 50px 3px 3px 50px;
+}
+.submitButton{
+    border-radius: 3px 50px 50px 3px; 
+    height:37px;
+    width:25%;
+    border-width: 1px;
+    border-style: solid;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
+    cursor: pointer;
+    font: bold 14px Arial, Helvetica;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+    background: linear-gradient(rgb(125, 125, 125), rgb(144, 160, 170));
+
+}
+.submitButton:hover {       
+    background-color: rgb(117, 193, 113);
+    background-image: linear-gradient(rgb(108,187,107), rgb(149,215,136));
+}   
+
+.submitButton:active {       
+    background: rgb(117, 193, 113);
+    outline: none;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;        
+}
+.leftButton{
+    position:absolute;
+    top:25%;
+    left:0;
+}
+.rightButton{
+    position:absolute;
+    top:25%;
+    right:0;
+}
+.roundButton{
+    display: block;
+    text-align: center;
+    align-items: center;
+    font-weight:bold;
+    border-radius:50%;
+    cursor: pointer;
+ height: 45px;
+ width: 45px;
+ background: rgba(52,105,111, 0.75);
+ text-shadow: 0 2px 2px rgba(255, 255, 255, 0.2);
+ font-size:40px;
+ border: 2px solid rgba(33, 68, 72, 0.59);
+}
+.myImages{
+    -moz-background-clip: padding-box;    
+    background-clip: padding-box; 
+    border-radius:10px;
+     width:100%;
+}
+table {
+    
+    width: 88%;
+    
+border: 8px solid rgba(221,221,221, 0.5);
+    -moz-background-clip: padding-box;    
+    background-clip: padding-box;
+    border-radius:10px;
+}
+.defaultDiv{
+    width: 88%;
+    margin-top:5%;
+border: 8px solid rgba(221,221,221, 0.5);
+    -moz-background-clip: padding-box;    
+    background-clip: padding-box;
+    border-radius:10px;
+    padding: 30px;
+    background-color:#fff;
+}
+
+.detailsBox{
+    border-radius : 5px;
+    position: absolute;
+    align-content: center;
+    width: 100%;
+    padding-top: 30px;
+    left: 7%;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    height:38px;
+    border-bottom: 1px solid #ddd;
+}
+ 
+h2, h3, .spanColor{
+   color:rgb(0, 82, 180);
+
+}
+/*Writing styles for the Desktop mode*/
+@media (min-width : 721px) and (max-width : 2048px){
+
+}
+
+/*writing styles for the tablet mode*/
+@media (min-width : 480px) and (max-width : 978px){
+    body{
+        height:920px;
+    }
+   #divFirst {
+    width: 95%;
+    /* left: 13px; */
+    border-radius: 10px;
+    height: 200px;
+}
+   #divSecond {
+    width: 95%;
+    /* right: 13px; */
+    padding-left:4px;
+    border-radius: 10px;
+    top: 214px;
+    height:720px;
+}
+   #searchbox{
+       top: -4%;
+   }
+   .leftButton {
+       top: 15%;
+   }
+   .rightButton{
+        top: 15%;
+   }
+   .defaultDiv{
+       width:85%;
+   }
+}
+
+/*writing styles for the mobile mode*/
+@media (min-width : 320px) and (max-width : 479px){
+     body{
+        height:540px;
+    }
+
+   #divFirst {
+    width: 94%;
+    /* left: 13px; */
+    border-radius: 15px;
+    height: 188px;
+}
+   #imageRef{
+       display:none;
+   }
+   #imageDefault{
+       display:none;
+   }
+   #welcomeText{
+       display:none;
+   }
+   #divSecond {
+    width: 93%;
+   
+    padding-left: 6px;
+    border-radius: 10px;
+    top: 202px;
+    height: 350px;
+}
+   #searchbox{
+       top: -10%;
+           left: 9%;
+    width: 80%;
+   }
+   .searchBox{
+       width:63%;
+   }
+   .leftButton {
+       top: 15%;
+   }
+   .rightButton{
+        top: 15%;
+   }
+   .defaultDiv{
+       width:78%;
+   }
+}
