@@ -1,0 +1,53 @@
+﻿[
+   {
+      "eventDescription": "Yoga classes and teaching meditation",
+      "eventID": 1,
+      "eventName": "Yoga",
+      "eventOnDay": "Monday, Wednesday, Friday",
+      "fees": 150,
+      "totalAvailable": 35,
+      "totalOccupied": 20
+    },
+
+  {
+    "eventDescription": "beginner classes for people interested in swimming",
+    "eventID": 2,
+    "eventName": "Swimming",
+    "eventOnDay": "Monday, Wednesday, Friday",
+    "fees": 50,
+    "totalAvailable": 50,
+    "totalOccupied": 20
+  },
+
+  {
+    "eventDescription": "Lawn tennis training",
+    "eventID": 3,
+    "eventName": "Tennis",
+    "eventOnDay": "Monday, Wednesday, Friday",
+    "fees": 150,
+    "totalAvailable": 50,
+    "totalOccupied": 20
+  },
+
+  {
+    "eventDescription": "Pickle ball for beginnners",
+    "eventID": 4,
+    "eventName": "Pickle Ball",
+    "eventOnDay": "Tuesday, Thursday, Saturday",
+    "fees": 50,
+    "totalAvailable": 50,
+    "totalOccupied": 20
+  },
+    {
+    "eventDescription": "beginner classes for people interested in Karate",
+    "eventID": 5,
+    "eventName": "Karate",
+    "eventOnDay": "Tuesday, Thursday, Saturday",
+    "fees": 70,
+    "totalAvailable": 30,
+    "totalOccupied": 20
+  }
+
+
+
+]
