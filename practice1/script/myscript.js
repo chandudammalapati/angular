@@ -109,4 +109,108 @@ myApp.controller("myEventHandling", function ($scope) {
     $scope.incrementDislikes = function (technology) {
         technology.dislikes++;
     }
+
+    var employeesArray = [
+     { name: "Ben", dateOfBirth: new Date("November 06, 1989"), gender: "Male", salary: 50001.243 },
+     { name: "Pamela", dateOfBirth: new Date("December 06, 1988"), gender: "Female", salary: 55004.654 },
+     { name: "Bill", dateOfBirth: new Date("November 12, 1987"), gender: "Male", salary: 57000.564 },
+     { name: "David", dateOfBirth: new Date("July 23, 1986"), gender: "Male", salary: 58000.233 },
+     { name: "Emma", dateOfBirth: new Date("August 21, 1990"), gender: "Female", salary: 50007.867 }
+
+    ];
+
+    $scope.empRecords = employeesArray;
+    $scope.rowLimit = 3;
+    $scope.sortColumn = "name";
+    $scope.reverseSort = false;
+
+    $scope.sortData = function (column) {
+        $scope.reverseSort = ($scope.sortColumn == column) ? !$scope.reverseSort : false;
+        $scope.sortColumn = column;
+    }
+
+    $scope.getSortClass = function (column) {
+        if ($scope.sortColumn == column) {
+            return $scope.reverseSort ? 'arrow-down' : 'arrow-up';
+        }
+        return '';
+    }
 });
+
+myApp.controller("myFilterController", function ($scope) {
+    var employeesArray = [
+  { name: "Ben", city: "London", gender: "Male", salary: 50001.243 },
+  { name: "Pamela", city: "Chicago", gender: "Female", salary: 55004.654 },
+  { name: "Bill", city: "Dallas", gender: "Male", salary: 57000.564 },
+  { name: "David", city: "Kansas", gender: "Male", salary: 58000.233 },
+  { name: "Emma", city: "NewJersey", gender: "Female", salary: 50007.867 }
+
+    ];
+    
+    $scope.empArry = employeesArray;
+    $scope.search = function (item) {
+      
+        if ($scope.searchText == undefined) {
+            return true;
+        }
+        else {
+            if (item.name.toLowerCase().indexOf($scope.searchText.toLowerCase()) != -1 ||
+                item.city.toLowerCase().indexOf($scope.searchText.toLowerCase()) != -1) {
+                
+                return true;
+            }
+        }
+        return false;
+    }
+    var empCustom = [
+            { name: "Ben", gender: 1, salary: 50001.243 },
+            { name: "Pamela", gender: 2, salary: 55004.654 },
+            { name: "Bill", gender: 1, salary: 57000.564 },
+            { name: "David", gender: 2, salary: 58000.233 },
+            { name: "Emma", gender: 3, salary: 50007.867 }
+    ]
+    $scope.empCusArry = empCustom;
+});
+
+myApp.controller("myNgShowNgHide", function ($scope) {
+    var employeesArray = [
+  { name: "Ben", city: "London", gender: "Male", salary: 50001.243 },
+  { name: "Pamela", city: "Chicago", gender: "Female", salary: 55004.654 },
+  { name: "Bill", city: "Dallas", gender: "Male", salary: 57000.564 },
+  { name: "David", city: "Kansas", gender: "Male", salary: 58000.233 },
+  { name: "Emma", city: "NewJersey", gender: "Female", salary: 50007.867 }
+
+    ];
+
+    $scope.empArry = employeesArray;
+});
+
+myApp.controller("myNgInclude", function ($scope) {
+    var employeesArray = [
+  { name: "Ben", gender: "Male", salary: 50001.243 },
+  { name: "Pamela", gender: "Female", salary: 55004.654 },
+  { name: "Bill", gender: "Male", salary: 57000.564 },
+  { name: "David", gender: "Male", salary: 58000.233 },
+  { name: "Emma", gender: "Female", salary: 50007.867 }
+
+    ];
+
+    $scope.empArry = employeesArray;
+    $scope.employeeView = "EmpTable.html";
+});
+
+myApp.controller("myCustomServiceCon", function ($scope, stringService) {
+    $scope.transformString = function (input) {
+
+        $scope.finalOutput = stringService.processString(input);
+    }
+});
+
+var demoApp = angular.module("demoAppModule", [])
+                      .controller("demoAnchorScroll", function ($scope, $location, $anchorScroll) {
+                          $scope.scrollTo = function (scrollLocation) {
+                              $location.hash(scrollLocation);
+                              $anchorScroll.yOffset = 20;
+                              $anchorScroll();
+                          }
+                      });

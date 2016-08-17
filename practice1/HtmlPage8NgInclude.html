@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+<html ng-app="myModule">
+<head>
+    <script src="lib\angular\angular.js"></script>
+
+    <script src="script\myscript.js"></script>
+
+    <script src="script/filters.js"></script>
+
+    <link href="css/style.css" rel="stylesheet" />
+</head>
+<body>
+    <div ng-controller="myNgInclude">
+        <select ng-model="employeeView">
+            <option value="EmpTable.html">Table</option>
+            <option value="EmpList.html">List</option>
+        </select><br/><br/>
+        <!-- <div ng-include="'EmpTable.html'"></div> -->
+        <div ng-include="employeeView"></div>
+    </div>
+</body>
+</html>

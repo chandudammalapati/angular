@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html ng-app="myModule">
+<head>
+    <script src="lib\angular\angular.js"></script>
+
+    <script src="script\myscript.js"></script>
+
+    <script src="script/filters.js"></script>
+
+    <link href="css/style.css" rel="stylesheet" />
+</head>
+<body>
+    <div ng-controller="myNgShowNgHide">
+        Using NG-HIDE:
+        <br/>
+        <input type="checkbox" ng-model="hideSalaryNGH"/> Hide Salary
+        <br/><br/>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>City</th>
+                    <th>Gender</th>
+                    <th ng-hide="hideSalaryNGH">Salary</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="employee in empArry">
+                    <td>{{employee.name}}</td>
+                    <td>{{employee.city}}</td>
+                    <td>{{employee.gender}}</td>
+                    <td ng-hide="hideSalaryNGH">{{employee.salary}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br/><br/>
+        Using NG-SHOW:
+        <br />
+        <input type="checkbox" ng-model="hideSalaryNGS" /> Hide Salary
+        <br /><br />
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>City</th>
+                    <th>Gender</th>
+                    <th ng-show="!hideSalaryNGS">Salary</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="employee in empArry">
+                    <td>{{employee.name}}</td>
+                    <td>{{employee.city}}</td>
+                    <td>{{employee.gender}}</td>
+                    <td ng-show="!hideSalaryNGS">{{employee.salary}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br /><br />
+        Using NG-SHOW:
+        <br />
+        <input type="checkbox" ng-model="hideSalaryNGHS" /> Hide Salary
+        <br /><br />
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>City</th>
+                    <th>Gender</th>
+                    <th ng-hide="hideSalaryNGHS">Salary</th>
+                    <th ng-show="hideSalaryNGHS">Salary</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="employee in empArry">
+                    <td>{{employee.name}}</td>
+                    <td>{{employee.city}}</td>
+                    <td>{{employee.gender}}</td>
+                    <td ng-hide="hideSalaryNGHS">{{employee.salary}}</td>
+                    <td ng-show="hideSalaryNGHS">xxxxx</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
