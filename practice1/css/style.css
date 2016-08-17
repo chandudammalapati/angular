@@ -32,3 +32,10 @@ th{
     border-top: 10px solid black;
     display:inline-block;
     }
+div{
+    width:400px;
+    border:1px solid black;
+    font-family:Arial;
+    font-size:large;
+    padding: 5px;
+}

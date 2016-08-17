@@ -184,3 +184,33 @@ myApp.controller("myNgShowNgHide", function ($scope) {
 
     $scope.empArry = employeesArray;
 });
+
+myApp.controller("myNgInclude", function ($scope) {
+    var employeesArray = [
+  { name: "Ben", gender: "Male", salary: 50001.243 },
+  { name: "Pamela", gender: "Female", salary: 55004.654 },
+  { name: "Bill", gender: "Male", salary: 57000.564 },
+  { name: "David", gender: "Male", salary: 58000.233 },
+  { name: "Emma", gender: "Female", salary: 50007.867 }
+
+    ];
+
+    $scope.empArry = employeesArray;
+    $scope.employeeView = "EmpTable.html";
+});
+
+myApp.controller("myCustomServiceCon", function ($scope, stringService) {
+    $scope.transformString = function (input) {
+
+        $scope.finalOutput = stringService.processString(input);
+    }
+});
+
+var demoApp = angular.module("demoAppModule", [])
+                      .controller("demoAnchorScroll", function ($scope, $location, $anchorScroll) {
+                          $scope.scrollTo = function (scrollLocation) {
+                              $location.hash(scrollLocation);
+                              $anchorScroll.yOffset = 20;
+                              $anchorScroll();
+                          }
+                      });
