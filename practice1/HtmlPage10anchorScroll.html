@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html ng-app="demoAppModule">
+<head>
+    <script src="lib\angular\angular.js"></script>
+    <script src="script\myscript.js"></script>
+    <link href="css/style.css" rel="stylesheet" />
+</head>
+<body ng-controller="demoAnchorScroll">
+   
+    <button id="TopButton" ng-click="scrollTo('BottomButton')">Go to the Bottom of the page</button>
+    <br /><br />
+    <div>        
+        <b>What is AngularJS?</b>
+        <br/>
+        AngularJS is a framework to build large scale and high performance web application while keeping them as easy-to-maintain. 
+        <br /><br />
+        <b>What is data binding in AngularJS?</b>
+        <br />
+        Data binding is the automatic synchronization of data between model and view components. ng-model directive is used in data binding.
+        <br /><br />
+        <b>What is scope in AngularJS?</b>
+        <br />
+        Scopes are objects that refer to the model. They act as glue between controller and view.
+        <br /><br />
+        <b>What are the controllers in AngularJS?</b>
+        <br />
+        Controllers are JavaScript functions that are bound to a particular scope. They are the prime actors in AngularJS framework and carry functions to operate on data and decide which view is to be updated to show the updated model based data.
+        <br /><br />
+        <b>What are the services in AngularJS?</b>
+        <br />
+        AngularJS come with several built-in services. For example $http service is used to make XMLHttpRequests (Ajax calls). Services are singleton objects which are instantiated only once in app.
+        <br /><br />
+        <b>What are the filters in AngularJS?</b>
+        <br />
+        Filters select a subset of items from an array and return a new array. Filters are used to show filtered items from a list of items based on defined criteria.
+        <br /><br />
+        <b>Explain directives in AngularJS.</b>
+        <br />
+        Directives are markers on DOM elements (such as elements, attributes, css, and more). These can be used to create custom HTML tags that serve as new, custom widgets. AngularJS has built-in directives (ng-bind, ng-model, etc) to perform most of the task that developers have to do.
+        <br /><br />
+        <b>Explain templates in AngularJS.</b>
+        <br />
+        Templates are the rendered view with information from the controller and model. These can be a single file (like index.html) or multiple views in one page using "partials".
+        <br /><br />
+        <b></b>
+        <br />
+
+
+    </div>
+    <br /><br />
+    <button id="BottomButton" ng-click="scrollTo('TopButton')">Go to the Top of the page</button>
+</body>
+</html>

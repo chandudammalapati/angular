@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html ng-app="myModule">
+<head >
+    <script src="lib\angular\angular.js"></script>
+
+    <script src="script\myscript.js"></script>
+    <script src="script/stringService.js"></script>
+    <link href="css/style.css" rel="stylesheet" />
+</head>
+<body>
+    <div ng-controller="myCustomServiceCon">
+        <table>
+            <tr>
+                <td>Your String</td>
+                <td><input type="text" ng-model="userInput"/></td>
+            </tr>
+            <tr>
+                <td>Result</td>
+                <td><input type="text" ng-model="finalOutput"/></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="button" ng-click="transformString(userInput)" value="Process String" />
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
