@@ -40,7 +40,11 @@ body {
 .v-divider{
  margin-left:5px;
  margin-right:5px;
- width:49% !important;
+ width:74% !important;
  height:100%;
  border-left:1px solid gray;
+}
+.makeFontRed{
+    color: red;
+    font-weight: bold;
 }

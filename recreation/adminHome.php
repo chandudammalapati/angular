@@ -1,3 +1,6 @@
+<?php
+
+?>
 <!DOCTYPE html>
 
 <html ng-app="MyRecApp">
@@ -12,10 +15,10 @@
         <script src="js/bootstrap.js" type="text/javascript"></script>
         <script src="js/bootstrapValidator.js" type="text/javascript"></script>
         <link href="css/bootstrap.css" rel="stylesheet" type="text/css"/>
-        <script src="app/appAngular.js" type="text/javascript"></script>
+        <script src="app/appAngularAdmin.js" type="text/javascript"></script>
         <script src="app/MyServices.js" type="text/javascript"></script>
         
-        <script src="js/myCustom.js" type="text/javascript"></script>
+        
     </head>
     <body>
        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -28,21 +31,19 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#/">
-                    <img src="images/logo1.png" alt="View/Book Event">
-                </a>
+                <a class="navbar-brand" href="#/">Manage Category</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="#">View Status</a>
+                        <a href="#">Manage Events</a>
                     </li>
                     <li>
-                        <a href="#">Announcements</a>
+                        <a href="#">Manage Reservations</a>
                     </li>
                     <li>
-                        <a href="#">Contact</a>
+                        <a href="#">Manage Announcements</a>
                     </li>
                 </ul>
             </div>
