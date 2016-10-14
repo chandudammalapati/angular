@@ -32,6 +32,7 @@ require_once("Rest.inc.php");
 				$this->response('',404); // If the method not exist with in this class "Page not found".
 		}
                 
+
                 private function eventcategories(){
                     if($this->get_request_method() != "GET"){
 				$this->response('',406);
@@ -54,6 +55,116 @@ require_once("Rest.inc.php");
 			}
                     $this->response('',204);	// If no records "No Content" status
                 } 
+                
+                
+              
+                
+                private function catListByID(){	
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+			$catID = (int) $this->_request['catID'];
+			if($catID > 0){	
+				$query = "SELECT distinct evenc.CategoryID, evenc.CategoryName, evenc.CategoryDescription FROM eventcategory evenc where evenc.CategoryID='$catID'";
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				if($r->num_rows > 0) {
+					$result = $r->fetch_assoc();	
+					$this->response($this->json($result), 200); // send category details
+				}
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
+                
+                 
+                private function getAdminByDetails(){
+			if($this->get_request_method() != "POST"){
+				$this->response('',406);
+			}
+			$admin = json_decode(file_get_contents("php://input"),true);
+			$AdminID = (int)$admin['admID'];
+                        $AdminPassword = $admin['admPwd'];
+
+                        $query = "SELECT `AdminID`, `AdminName`, `AdminPassword` FROM `adminprofile` WHERE `AdminID` = '$AdminID' and `AdminPassword` = '$AdminPassword'";
+			if(!empty($AdminID) and !empty($AdminPassword)){
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+                                if($r->num_rows>0){
+                                    $result = $r->fetch_assoc();
+                                    $this->response($this->json($result),200);
+                                }
+				$this->response('',204);	// "No Content" status				
+			}
+                        $error = array('status' => "Failed", "msg" => "Invalid admin ID or Password");
+			$this->response($this->json($error), 400);                        
+		}
+                
+                
+                
+                private function insertCategory(){
+			if($this->get_request_method() != "POST"){
+				$this->response('',406);
+			}
+
+			$category = json_decode(file_get_contents("php://input"),true);
+			$column_names = array('CategoryName', 'CategoryDescription');
+			$keys = array_keys($category);
+			$columns = '';
+			$values = '';
+			foreach($column_names as $desired_key){ // Check the category received. If blank insert blank into the array.
+			   if(!in_array($desired_key, $keys)) {
+			   		$$desired_key = '';
+				}else{
+					$$desired_key = $category[$desired_key];
+				}
+				$columns = $columns.$desired_key.',';
+				$values = $values."'".$$desired_key."',";
+			}
+			$query = "INSERT INTO eventcategory(".trim($columns,',').") VALUES(".trim($values,',').")";
+			if(!empty($category)){
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				$success = array('status' => "Success", "msg" => "Category Created Successfully.", "data" => $category);
+				$this->response($this->json($success),200);
+			}else
+				$this->response('',204);	//"No Content" status
+		}
+                
+                 private function updateCategory(){
+			if($this->get_request_method() != "POST"){
+				$this->response('',406);
+			}
+			$category = json_decode(file_get_contents("php://input"),true);
+			$id = (int)$category['catID'];
+                        $CategoryName = $category['catName'];
+                        $CategoryDescription = $category['catDescription'];
+			
+			
+                        $query = "UPDATE `eventcategory` SET `CategoryName` = '$CategoryName', `CategoryDescription` = '$CategoryDescription' WHERE `eventcategory`.`CategoryID` = '$id'";
+			if(!empty($category)){
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				$success = array('status' => "Success", "msg" => "category ".$id." Updated Successfully.", "data" => $category);
+				$this->response($this->json($success),200);
+			}else
+				$this->response('',204);	// "No Content" status
+		}
+                
+                
+                private function eventsListAll(){	
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+			$query="SELECT distinct ed.EventID, ed.EventName, ed.EventDescription, ed.CoachName, ed.Duration, ed.CostPerPerson, ed.DaysInWeek, ed.LevelOfCourse, ed.NoOfAvailable, ed.StartDate, ed.TimeOfEvent, ed.ShowStaus, ed.CategoryNameEventData FROM eventdata ed order BY ed.EventName desc";
+			$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+
+			if($r->num_rows > 0){
+				$result = array();
+				while($row = $r->fetch_assoc()){
+					$result[] = $row;
+				}
+				$this->response($this->json($result), 200); // send user details
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
+                
+                
                 
                 private function eventsList(){
                     if($this->get_request_method() != "GET"){
@@ -92,6 +203,24 @@ require_once("Rest.inc.php");
 				}
                         $this->response('',204);	// If no records "No Content" status                    
                 }
+                
+                
+                private function catEventByID(){	
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+			$eventID = (int) $this->_request['eventIDSelected'];
+			if($eventID > 0){	
+				$query = "SELECT distinct ed.EventID, ed.EventName, ed.EventDescription, ed.CoachName, ed.Duration, ed.CostPerPerson, ed.DaysInWeek, ed.LevelOfCourse, ed.NoOfAvailable, ed.StartDate, ed.TimeOfEvent, ed.ShowStaus, ed.CategoryNameEventData FROM eventdata ed WHERE ed.EventID=$eventID";
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				if($r->num_rows > 0) {
+					$result = $r->fetch_assoc();	
+					$this->response($this->json($result), 200); // send category details
+				}
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
+                
 
                 private function eventsDetails(){
                     if($this->get_request_method() != "GET"){
@@ -131,6 +260,128 @@ require_once("Rest.inc.php");
                     $this->response('',204);	// If no records "No Content" status 
                 }
 
+                
+                private function insertEvent(){
+			if($this->get_request_method() != "POST"){
+				$this->response('',406);
+			}
+
+			$event = json_decode(file_get_contents("php://input"),true);
+			$column_names = array('CategoryNameEventData', 'CoachName', 'CostPerPerson', 'DaysInWeek','Duration', 'EventDescription', 'EventName','LevelOfCourse', 'NoOfAvailable','ShowStaus', 'StartDate', 'TimeOfEvent');
+			$keys = array_keys($event);
+			$columns = '';
+			$values = '';
+			foreach($column_names as $desired_key){ // Check the category received. If blank insert blank into the array.
+			   if(!in_array($desired_key, $keys)) {
+			   		$$desired_key = '';
+				}else{
+					$$desired_key = $event[$desired_key];
+				}
+				$columns = $columns.$desired_key.',';
+				$values = $values."'".$$desired_key."',";
+			}
+			$query = "INSERT INTO eventdata(".trim($columns,',').") VALUES(".trim($values,',').")";
+			if(!empty($event)){
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				$success = array('status' => "Success", "msg" => "Event Created Successfully.", "data" => $event);
+				$this->response($this->json($success),200);
+			}else
+				$this->response('',204);	//"No Content" status
+		}
+ 
+                 private function updateEvent(){
+			if($this->get_request_method() != "POST"){
+				$this->response('',406);
+			}
+			$event = json_decode(file_get_contents("php://input"),true);
+			$eventID = (int)$event['eveID'];
+                        $Duration = (int)$event['Dur'];
+                        $CostPerPerson = (int)$event['CosPerson'];
+                        $NoOfAvailable = (int)$event['NoAvail'];
+                        $EventName = $event['EveName'];
+                        $EventDescription = $event['eveDescription'];
+			$CoachName = $event['CoaName'];
+                        $DaysInWeek = $event['DayWeek'];
+			$LevelOfCourse = $event['LvlCrse'];
+                        $StartDate = $event['StrDate'];			
+                        $TimeOfEvent = $event['TimeEvent'];			
+                        $ShowStaus = $event['ShwStatus'];
+                        $CategoryNameEventData = $event['catName'];
+                        
+                        $query = "UPDATE `eventdata` SET `EventName` = '$EventName', `EventDescription` = '$EventDescription', `CoachName` = '$CoachName', `Duration` = '$Duration', `CostPerPerson` = '$CostPerPerson', `DaysInWeek` = '$DaysInWeek', `LevelOfCourse` = '$LevelOfCourse', `NoOfAvailable` = '$NoOfAvailable', `StartDate` = '$StartDate', `TimeOfEvent` = '$TimeOfEvent', `ShowStaus` = '$ShowStaus', `CategoryNameEventData` = '$CategoryNameEventData' WHERE `eventdata`.`EventID` = '$eventID'";
+			if(!empty($event)){
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				$success = array('status' => "Success", "msg" => "Event ".$eventID." Updated Successfully.", "data" => $event);
+				$this->response($this->json($success),200);
+			}else
+				$this->response('',204);	// "No Content" status
+		}
+                
+                
+                
+             private function reservationListAll(){	
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+                        
+			$query="SELECT distinct rd.ReservationID, rd.CandidateName, rd.Gender, rd.Age, rd.Email, rd.GuardianName, rd.GuardianRelation, rd.ConfirmationStatus, rd.EventIDReservationData, rd.AdminIDReservationData , rd.Remarks, rd.CardNumber, rd.cvv, rd.expiryMonth, rd.expiryYear, rd.BillingAddress FROM reservationdata rd order BY rd.CandidateName desc";
+			$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+
+			if($r->num_rows > 0){
+				$result = array();
+				while($row = $r->fetch_assoc()){
+					$result[] = $row;
+				}
+				$this->response($this->json($result), 200); // send user details
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
+                
+                private function getResDataByID(){	
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+			$resID = $this->_request['resIDSelected'];
+			if($resID!=""){	
+				$query = "SELECT distinct rd.ReservationID, rd.CandidateName, rd.Gender, rd.Age, rd.Email, rd.GuardianName, rd.GuardianRelation, rd.ConfirmationStatus, rd.EventIDReservationData, rd.AdminIDReservationData , rd.Remarks, rd.CardNumber, rd.cvv, rd.expiryMonth, rd.expiryYear, rd.BillingAddress FROM reservationdata rd where rd.ReservationID = '$resID'";
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				if($r->num_rows > 0) {
+					$result = $r->fetch_assoc();	
+					$this->response($this->json($result), 200); // send category details
+				}
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
+                
+                private function updateReservation(){
+			if($this->get_request_method() != "POST"){
+				$this->response('',406);
+			}
+			$event = json_decode(file_get_contents("php://input"),true);
+			$eventID = (int)$event['eveID'];
+                        $Duration = (int)$event['Dur'];
+                        $CostPerPerson = (int)$event['CosPerson'];
+                        $NoOfAvailable = (int)$event['NoAvail'];
+                        $EventName = $event['EveName'];
+                        $EventDescription = $event['eveDescription'];
+			$CoachName = $event['CoaName'];
+                        $DaysInWeek = $event['DayWeek'];
+			$LevelOfCourse = $event['LvlCrse'];
+                        $StartDate = $event['StrDate'];			
+                        $TimeOfEvent = $event['TimeEvent'];			
+                        $ShowStaus = $event['ShwStatus'];
+                        $CategoryNameEventData = $event['catName'];
+                        
+                        $query = "UPDATE `eventdata` SET `EventName` = '$EventName', `EventDescription` = '$EventDescription', `CoachName` = '$CoachName', `Duration` = '$Duration', `CostPerPerson` = '$CostPerPerson', `DaysInWeek` = '$DaysInWeek', `LevelOfCourse` = '$LevelOfCourse', `NoOfAvailable` = '$NoOfAvailable', `StartDate` = '$StartDate', `TimeOfEvent` = '$TimeOfEvent', `ShowStaus` = '$ShowStaus', `CategoryNameEventData` = '$CategoryNameEventData' WHERE `eventdata`.`EventID` = '$eventID'";
+			if(!empty($event)){
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				$success = array('status' => "Success", "msg" => "Event ".$eventID." Updated Successfully.", "data" => $event);
+				$this->response($this->json($success),200);
+			}else
+				$this->response('',204);	// "No Content" status
+		}
+                
+                
                 private function registerCandidate(){
                     if($this->get_request_method() != "GET"){
 				$this->response('',406);
