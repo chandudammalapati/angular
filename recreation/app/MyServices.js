@@ -19,6 +19,14 @@ recRestApp.factory("servicesData", ['$http', function($http){
          //return $http.get(serviceBase + 'registerCandidate?CandidateName='+candidate.CandidateName);
      };
     
+    obj.getReservation = function(reservationID){
+       
+        return $http.get(serviceBase + 'getResDataByID?resIDSelected=' + reservationID);
+    };
+    
+    obj.getAnnoucementPublic = function(){
+        return $http.get(serviceBase + 'AnnoucementListPublic');
+        }; 
     
     return obj;
 }]);

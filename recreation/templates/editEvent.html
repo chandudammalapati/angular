@@ -54,9 +54,9 @@
 <div class= "form-group">
     <label class= "col-md-2"> Fees </label>
     <div class="col-md-4">
-    <input name="number" ng-model="event.CostPerPerson" type= "text" class= "form-control" placeholder="Enter Fees" required/>
-    <span ng-show="myForm.number.$dirty && myForm.number.$invalid && !myForm.number.$error.number" class="help-inline">Fees Required</span>
-    <span ng-show="myForm.number.$error.number" class="help-inline">Fees should be numeric</span>
+    <input name="costpp" ng-model="event.CostPerPerson" type= "text" class= "form-control" placeholder="Enter Fees" required/>
+    <span ng-show="myForm.costpp.$dirty && myForm.number.$invalid && !myForm.costpp.$error.number" class="help-inline">Fees Required</span>
+    <span ng-show="myForm.costpp.$error.number" class="help-inline">Fees should be numeric</span>
     </div>
 </div>
     
@@ -139,7 +139,7 @@
 <div class= "form-group">
     <label class= "col-md-2"></label>
     <div class="col-md-4">
-    <a href="#/" class="btn">Cancel</a>
+    <a href="#/manageEvents" class="btn">Cancel</a>
         <button ng-click="saveEvent(event);" 
                 ng-disabled="isClean() || myForm.$invalid"
                 class="btn btn-primary">{{buttonText}}</button>

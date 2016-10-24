@@ -73,5 +73,60 @@ recRestAdminApp.factory("servicesData", ['$http', function($http){
         return $http.get(serviceBase + 'getResDataByID?resIDSelected=' + reservationID);
     };
     
+    
+     obj.updateReservation = function (reservationID, reservation) {
+            //debugger;
+	    return $http.post(serviceBase + 'updateReservation', {resID:reservationID, admnID:reservation.AdminIDReservationData, ageofC:reservation.Age, billAddr:reservation.BillingAddress, canName:reservation.CandidateName, confStatus:reservation.ConfirmationStatus, emailC:reservation.Email, EveID:reservation.EventIDReservationData, GenCan:reservation.Gender, GrdnName:reservation.GuardianName, GrdnRltn:reservation.GuardianRelation, Rmks:reservation.Remarks, cardNum:reservation.CardNumber, expMon:reservation.expiryMonth, empYear:reservation.expiryYear, cvvCard:reservation.cvv }).then(function (status) {
+                //debugger;
+                console.log(status);
+	        return status.data;
+	    });
+	}; 
+      obj.updateReservationIncreaseCount = function (reservationID, reservation) {
+            debugger;
+	    return $http.post(serviceBase + 'updateReservationIncCount', {resID:reservationID, evntID:reservation.EventIDReservationData, admnID:reservation.AdminIDReservationData, ageofC:reservation.Age, billAddr:reservation.BillingAddress, canName:reservation.CandidateName, confStatus:reservation.ConfirmationStatus, emailC:reservation.Email, EveID:reservation.EventIDReservationData, GenCan:reservation.Gender, GrdnName:reservation.GuardianName, GrdnRltn:reservation.GuardianRelation, Rmks:reservation.Remarks, cardNum:reservation.CardNumber, expMon:reservation.expiryMonth, empYear:reservation.expiryYear, cvvCard:reservation.cvv }).then(function (status) {
+                //debugger;
+                console.log(status);
+	        return status.data;
+	    });
+	};
+        obj.updateReservationReduceCount = function (reservationID, reservation) {
+            debugger;
+	    return $http.post(serviceBase + 'updateReservationReduCount', {resID:reservationID, evntID:reservation.EventIDReservationData, admnID:reservation.AdminIDReservationData, ageofC:reservation.Age, billAddr:reservation.BillingAddress, canName:reservation.CandidateName, confStatus:reservation.ConfirmationStatus, emailC:reservation.Email, EveID:reservation.EventIDReservationData, GenCan:reservation.Gender, GrdnName:reservation.GuardianName, GrdnRltn:reservation.GuardianRelation, Rmks:reservation.Remarks, cardNum:reservation.CardNumber, expMon:reservation.expiryMonth, empYear:reservation.expiryYear, cvvCard:reservation.cvv }).then(function (status) {
+                //debugger;
+                console.log(status);
+	        return status.data;
+	    });
+	};
+        
+        obj.getAnnouncementAll = function(){
+        return $http.get(serviceBase + 'announcementListAll');
+        }; 
+        
+        obj.getAncmtByID = function(announcementID){
+       
+        return $http.get(serviceBase + 'getAncmtDataByID?ancmtIDSelected=' + announcementID);
+       };
+       
+       obj.insertAnnouncement = function (announcement) {
+         
+        return $http.post(serviceBase + 'insertAnnouncement', {admnID:announcement.AdminIDAnnouncement, headngCnt:announcement.Heading, bodyCnt:announcement.BodyContent, loctn:announcement.Location, pblsh:announcement.Publish}).then(function (results) {
+       //debugger;
+        console.log(results);
+        return results;
+       
+        });
+        };
+        
+        obj.updateAnnouncement = function (announcementID, announcement) {
+         
+        return $http.post(serviceBase + 'updateAnnouncement', {aancID:announcementID ,admnID:announcement.AdminIDAnnouncement, headngCnt:announcement.Heading, bodyCnt:announcement.BodyContent, loctn:announcement.Location, pblsh:announcement.Publish}).then(function (results) {
+       //debugger;
+        console.log(results);
+        return results;
+       
+        });
+        };
+       
     return obj;
 }]);

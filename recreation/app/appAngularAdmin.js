@@ -85,6 +85,7 @@ recRestAdminApp.controller('eventsList' , ['$scope', 'servicesData', '$rootScope
         $rootScope.adminName = sessionStorage.getItem("adminUserName");
         $scope.adminIDLogged =  $rootScope.adminID;
         $scope.adminNameLogged = $rootScope.adminName;
+        
         if($rootScope.adminID === "" || $rootScope.adminID ===undefined || $rootScope.adminID ===null){
             $location.path('/adminLogin');
             sessionStorage.setItem("adminUserName", "");
@@ -133,6 +134,7 @@ recRestAdminApp.controller('adminLoginCtrl', function($scope, $rootScope, $locat
                 $scope.admin.AdminID = $rootScope.adminID;
                 $scope.admin.AdminName = null;
                 $scope.admin.AdminPassword = null;
+                $scope.errorLoginMsg = 'INVALID';
             }
             else{
                 $location.path('/');
@@ -254,7 +256,7 @@ recRestAdminApp.controller('editResv', function ($scope, $rootScope, $location, 
         }
         else{
     
-    debugger;
+    
     var reservationID = ($routeParams.reservationID) ? ($routeParams.reservationID) : 0;
     $rootScope.title = (reservationID !== undefined || reservationID !== null ) ? 'Edit Reservation' : 'Add Reservation';
     $scope.buttonText = (reservationID !== undefined || reservationID !== null ) ? 'Update Reservation' : 'Add New Event';
@@ -271,24 +273,33 @@ recRestAdminApp.controller('editResv', function ($scope, $rootScope, $location, 
       //debugger;
       $scope.reservation = angular.copy(original);
       $scope.reservation._id = reservationID;
-
+      //debugger;
+      var ConfirmationStatusBefore = $scope.reservation.ConfirmationStatus;
       $scope.isClean = function() {
         return angular.equals(original, $scope.reservation);
       };
       
       servicesData.getEventcategories().then(function (data){
            //debugger;
-            $scope.categ = data.data;
-           
-            
+            $scope.categ = data.data; 
         });
 
       $scope.saveReservation = function(reservation) {
         $location.path('/manageReservations');
+        
         if (reservationID !== undefined || reservationID !== "") {
             reservation.AdminIDReservationData = $rootScope.adminID;
+            if((ConfirmationStatusBefore ==='PENDING' && reservation.ConfirmationStatus ==='NO')||(ConfirmationStatusBefore ==='YES' && reservation.ConfirmationStatus ==='NO')){
+                
+                servicesData.updateReservationIncreaseCount(reservationID, reservation);
+            }
+            else if((ConfirmationStatusBefore ==='NO' && reservation.ConfirmationStatus ==='PENDING') || (ConfirmationStatusBefore ==='NO' && reservation.ConfirmationStatus ==='YES')){
+                servicesData.updateReservationReduceCount(reservationID, reservation, reservation.EventIDReservationData);
+            }
+            else{ 
             servicesData.updateReservation(reservationID, reservation);
-        }
+            }
+        }   //end of if checking reservation ID is valid or not
     };
     
     $scope.adminLogout = function(){
@@ -300,10 +311,91 @@ recRestAdminApp.controller('editResv', function ($scope, $rootScope, $location, 
     
         }   //end of else at session storage checking
 });
-            
-            
+
+
+
+recRestAdminApp.controller('AnnouncementList' , ['$scope', 'servicesData', '$rootScope', '$location', function($scope, servicesData, $rootScope, $location){
+        $rootScope.adminID = sessionStorage.getItem("adminUserID");
+        $rootScope.adminName = sessionStorage.getItem("adminUserName");
+        $scope.adminIDLogged =  $rootScope.adminID;
+        $scope.adminNameLogged = $rootScope.adminName;
+        if($rootScope.adminID === "" || $rootScope.adminID ===undefined || $rootScope.adminID ===null){
+            $location.path('/adminLogin');
+            sessionStorage.setItem("adminUserName", "");
+        }
+        else{
         
         
+        servicesData.getAnnouncementAll().then(function (data){
+            //debugger;
+            
+            $scope.allAnnouncements = data.data;
+            console.log($scope.allAnnouncements);
+            
+        });
+              $scope.adminLogout = function(){
+            $location.path('/adminLogin');
+            sessionStorage.setItem("adminUserID", "");
+            sessionStorage.setItem("adminUserName", "");
+        };
+        
+        
+        }
+}]); 
+            
+        
+ 
+recRestAdminApp.controller('editAnnouncement', function ($scope, $rootScope, $location, $routeParams, servicesData, announcement) {
+    $rootScope.adminID = sessionStorage.getItem("adminUserID");
+        $rootScope.adminName = sessionStorage.getItem("adminUserName");
+        $scope.adminIDLogged =  $rootScope.adminID;
+        $scope.adminNameLogged = $rootScope.adminName;
+        if($rootScope.adminID === "" || $rootScope.adminID ===undefined || $rootScope.adminID ===null){
+            $location.path('/adminLogin');
+            sessionStorage.setItem("adminUserName", "");
+        }
+        else{
+    
+    debugger;
+    var announcementID = ($routeParams.announcementID) ? parseInt($routeParams.announcementID) : 0;
+    $rootScope.title = (announcementID > 0) ? 'Edit Announcement' : 'Add Announcement';
+    $scope.buttonText = (announcementID > 0) ? 'Update Announcement' : 'Add New Announcement';
+      
+    
+    var original = announcement.data;
+    
+      original._id = announcementID;
+      //debugger;
+      $scope.announcement = angular.copy(original);
+      $scope.announcement._id = announcementID;
+
+      $scope.isClean = function() {
+        return angular.equals(original, $scope.announcement);
+      };
+      
+
+      $scope.saveEvent = function(announcement) {
+        $location.path('/manageAnnouncement');
+        announcement.AdminIDAnnouncement = $rootScope.adminID;
+        if (announcementID <= 0) {
+            
+            servicesData.insertAnnouncement(announcement);
+        }
+        else {
+            
+            servicesData.updateAnnouncement(announcementID, announcement);
+        }
+    };
+    
+    $scope.adminLogout = function(){
+            $location.path('/adminLogin');
+            sessionStorage.setItem("adminUserID", "");
+            sessionStorage.setItem("adminUserName", "");
+        };
+
+        }   //end of else at session storage checking
+});
+      
 
 
 
@@ -372,11 +464,22 @@ recRestAdminApp.config(['$routeProvider',
       })
        .when('/manageAnnouncement',{
            title:'registerEventSelected',
-           templateUrl: 'templates/manageAnnouncement.html',
-           controller: 'registerSelEvent',
-           controllerAs: 'regEvent'
+           templateUrl: 'templates/AnnouncementList.html',
+           controller: 'AnnouncementList',
+           controllerAs: 'annouList'
        })
-        
+        .when('/edit-announcement/:announcementID', {
+        title: 'Edit Announcement',
+        templateUrl: 'templates/editAnnouncement.html',
+        controller: 'editAnnouncement',
+        resolve: {
+          announcement: function(servicesData, $route){
+            var announcementID = $route.current.params.announcementID;
+            return servicesData.getAncmtByID(announcementID);
+            
+          }
+        }
+      })
        .when('/adminLogin', {
            title:'adminLogin',
            templateUrl: 'templates/adminLogin.html',

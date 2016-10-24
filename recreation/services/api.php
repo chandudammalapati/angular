@@ -172,7 +172,7 @@ require_once("Rest.inc.php");
 			}
                         $nameCat = $this->_request['nameCat'];
                         if($nameCat!=""){
-                            $query = "SELECT distinct ed.EventID, ed.EventName, ed.EventDescription, ed.CoachName, ed.Duration, ed.CostPerPerson, ed.DaysInWeek, ed.LevelOfCourse, ed.NoOfAvailable, ed.StartDate, ed.TimeOfEvent, ed.ShowStaus, ed.CategoryNameEventData FROM eventdata ed WHERE ed.CategoryNameEventData= '$nameCat' order BY ed.EventName desc";
+                            $query = "SELECT distinct ed.EventID, ed.EventName, ed.EventDescription, ed.CoachName, ed.Duration, ed.CostPerPerson, ed.DaysInWeek, ed.LevelOfCourse, ed.NoOfAvailable, ed.StartDate, ed.TimeOfEvent, ed.ShowStaus, ed.CategoryNameEventData FROM eventdata ed WHERE (ed.CategoryNameEventData= '$nameCat' and ed.ShowStaus='YES' and ed.NoOfAvailable>0) order BY ed.EventName desc";
                         }
                         $resultSetData = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
                         if($resultSetData->num_rows > 0) {
@@ -317,7 +317,102 @@ require_once("Rest.inc.php");
 				$this->response('',204);	// "No Content" status
 		}
                 
+                private function announcementListAll(){	
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+                        
+			$query="SELECT distinct anmt.AnnounceID, anmt.Heading, anmt.BodyContent, anmt.Publish, anmt.Location, anmt.AdminIDAnnouncement  FROM announcement anmt order BY anmt.AnnounceID  desc";
+			$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+
+			if($r->num_rows > 0){
+				$result = array();
+				while($row = $r->fetch_assoc()){
+					$result[] = $row;
+				}
+				$this->response($this->json($result), 200); // send user details
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
                 
+                private function AnnoucementListPublic(){	
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+                        
+			$query="SELECT distinct anmt.AnnounceID, anmt.Heading, anmt.BodyContent,  anmt.Location, anmt.AdminIDAnnouncement  FROM announcement anmt where anmt.Publish='YES'  order BY anmt.AnnounceID  desc";
+			$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+
+			if($r->num_rows > 0){
+				$result = array();
+				while($row = $r->fetch_assoc()){
+					$result[] = $row;
+				}
+				$this->response($this->json($result), 200); // send user details
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
+                
+                
+                private function getAncmtDataByID(){	
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+			$AnnounceID = (int) $this->_request['ancmtIDSelected'];
+			if($AnnounceID!=""){	
+				$query = "SELECT distinct anmt.AnnounceID, anmt.Heading, anmt.BodyContent, anmt.Publish, anmt.Location, anmt.AdminIDAnnouncement  FROM announcement anmt where anmt.AnnounceID = '$AnnounceID'";
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				if($r->num_rows > 0) {
+					$result = $r->fetch_assoc();	
+					$this->response($this->json($result), 200); // send category details
+				}
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
+                
+              private function insertAnnouncement(){
+			if($this->get_request_method() != "POST"){
+				$this->response('',406);
+			}
+			$announcement = json_decode(file_get_contents("php://input"),true);
+			$AdminIDAnnouncement = (int) $announcement['admnID'];
+                        $Heading = $announcement['headngCnt'];
+                        $BodyContent = $announcement['bodyCnt'];
+                        $Location = $announcement['loctn'];
+                        $Publish = $announcement['pblsh'];
+                        
+                        $query = "INSERT INTO `announcement` (`AnnounceID`, `Heading`, `BodyContent`, `Publish`, `Location`, `AdminIDAnnouncement`) VALUES (NULL, '$Heading', '$BodyContent', '$Publish', '$Location', '$AdminIDAnnouncement')";
+			
+                        if(!empty($announcement)){
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+
+				$success = array('status' => "Success", "msg" => "Announcement added Successfully.", "data" => $announcement);
+				$this->response($this->json($success),200);
+			}else
+				$this->response('',204);	// "No Content" status
+		}
+                  
+                  private function updateAnnouncement(){
+			if($this->get_request_method() != "POST"){
+				$this->response('',406);
+			}
+                        $announcement = json_decode(file_get_contents("php://input"),true);
+			$AdminIDAnnouncement = (int) $announcement['admnID'];
+                        $AnnounceID = (int) $announcement['aancID'];
+                        
+                        $Heading = $announcement['headngCnt'];
+                        $BodyContent = $announcement['bodyCnt'];
+                        $Location = $announcement['loctn'];
+                        $Publish = $announcement['pblsh'];
+                        
+                        $query = "UPDATE `announcement` SET `Heading` = '$Heading', `BodyContent` = '$BodyContent', `Publish` = '$Publish', `Location` = '$Location', `AdminIDAnnouncement` = '$AdminIDAnnouncement' WHERE `announcement`.`AnnounceID` = '$AnnounceID'";
+			if(!empty($announcement)){
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				$success = array('status' => "Success", "msg" => "Annoucement ".$AnnounceID." Updated Successfully.", "data" => $announcement);
+				$this->response($this->json($success),200);
+			}else
+				$this->response('',204);	// "No Content" status
+		}            
                 
              private function reservationListAll(){	
 			if($this->get_request_method() != "GET"){
@@ -349,38 +444,117 @@ require_once("Rest.inc.php");
 					$result = $r->fetch_assoc();	
 					$this->response($this->json($result), 200); // send category details
 				}
+                                if($r->num_rows <= 0){
+                                    $errorArr = array();
+                                    $errorArr['CandidateName'] = 'NotFound';
+                                    $this->response($this->json($errorArr), 200); // send category details
+                                }
+                                
 			}
-			$this->response('',204);	// If no records "No Content" status
+			$this->response('No Id given',204);	
+                        
 		}
+                
+                
                 
                 private function updateReservation(){
 			if($this->get_request_method() != "POST"){
 				$this->response('',406);
 			}
-			$event = json_decode(file_get_contents("php://input"),true);
-			$eventID = (int)$event['eveID'];
-                        $Duration = (int)$event['Dur'];
-                        $CostPerPerson = (int)$event['CosPerson'];
-                        $NoOfAvailable = (int)$event['NoAvail'];
-                        $EventName = $event['EveName'];
-                        $EventDescription = $event['eveDescription'];
-			$CoachName = $event['CoaName'];
-                        $DaysInWeek = $event['DayWeek'];
-			$LevelOfCourse = $event['LvlCrse'];
-                        $StartDate = $event['StrDate'];			
-                        $TimeOfEvent = $event['TimeEvent'];			
-                        $ShowStaus = $event['ShwStatus'];
-                        $CategoryNameEventData = $event['catName'];
+			$reservation = json_decode(file_get_contents("php://input"),true);
+			$ReservationID = $reservation['resID'];
+                        $Age = (int)$reservation['ageofC'];
+                        $CandidateName = $reservation['canName'];
+                        $Gender = $reservation['GenCan'];
+                        $Email = $reservation['emailC'];
+                        $GuardianName = $reservation['GrdnName'];
+			$GuardianRelation = $reservation['GrdnRltn'];
+                        $ConfirmationStatus = $reservation['confStatus'];
+                        $AdminIDReservationData = (int) $reservation['admnID'];
+                        $Remarks = $reservation['Rmks'];
+			$CardNumber = $reservation['cardNum'];
+                        $expiryMonth = $reservation['expMon'];			
+                        $expiryYear = $reservation['empYear'];			
+                        $cvv = $reservation['cvvCard'];
+                        $BillingAddress = $reservation['billAddr'];
                         
-                        $query = "UPDATE `eventdata` SET `EventName` = '$EventName', `EventDescription` = '$EventDescription', `CoachName` = '$CoachName', `Duration` = '$Duration', `CostPerPerson` = '$CostPerPerson', `DaysInWeek` = '$DaysInWeek', `LevelOfCourse` = '$LevelOfCourse', `NoOfAvailable` = '$NoOfAvailable', `StartDate` = '$StartDate', `TimeOfEvent` = '$TimeOfEvent', `ShowStaus` = '$ShowStaus', `CategoryNameEventData` = '$CategoryNameEventData' WHERE `eventdata`.`EventID` = '$eventID'";
-			if(!empty($event)){
+                        $query = "UPDATE `reservationdata` SET `CandidateName` = '$CandidateName', `Gender` = '$Gender', `Age` = '$Age', `Email` = '$Email', `GuardianName` = '$GuardianName', `GuardianRelation` = '$GuardianRelation', `ConfirmationStatus` = '$ConfirmationStatus', `AdminIDReservationData` = '$AdminIDReservationData', `Remarks` = '$Remarks', `BillingAddress` = '$BillingAddress', `CardNumber` = '$CardNumber', `expiryMonth` = '$expiryMonth', `expiryYear` = '$expiryYear', `cvv` = '$cvv' WHERE `reservationdata`.`ReservationID` = '$ReservationID'";
+			if(!empty($reservation)){
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
-				$success = array('status' => "Success", "msg" => "Event ".$eventID." Updated Successfully.", "data" => $event);
+				$success = array('status' => "Success", "msg" => "Event ".$ReservationID." Updated Successfully.", "data" => $reservation);
 				$this->response($this->json($success),200);
 			}else
 				$this->response('',204);	// "No Content" status
 		}
+
+                           private function updateReservationReduCount(){
+			if($this->get_request_method() != "POST"){
+				$this->response('',406);
+			}
+			$reservation = json_decode(file_get_contents("php://input"),true);
+			$ReservationID = $reservation['resID'];
+                        $Age = (int)$reservation['ageofC'];
+                        $EventID = (int)$reservation['evntID'];
+                        $CandidateName = $reservation['canName'];
+                        $Gender = $reservation['GenCan'];
+                        $Email = $reservation['emailC'];
+                        $GuardianName = $reservation['GrdnName'];
+			$GuardianRelation = $reservation['GrdnRltn'];
+                        $ConfirmationStatus = $reservation['confStatus'];
+                        $AdminIDReservationData = (int) $reservation['admnID'];
+                        $Remarks = $reservation['Rmks'];
+			$CardNumber = $reservation['cardNum'];
+                        $expiryMonth = $reservation['expMon'];			
+                        $expiryYear = $reservation['empYear'];			
+                        $cvv = $reservation['cvvCard'];
+                        $BillingAddress = $reservation['billAddr'];
+                        
+                        $query = "UPDATE `reservationdata` SET `CandidateName` = '$CandidateName', `Gender` = '$Gender', `Age` = '$Age', `Email` = '$Email', `GuardianName` = '$GuardianName', `GuardianRelation` = '$GuardianRelation', `ConfirmationStatus` = '$ConfirmationStatus', `AdminIDReservationData` = '$AdminIDReservationData', `Remarks` = '$Remarks', `BillingAddress` = '$BillingAddress', `CardNumber` = '$CardNumber', `expiryMonth` = '$expiryMonth', `expiryYear` = '$expiryYear', `cvv` = '$cvv' WHERE `reservationdata`.`ReservationID` = '$ReservationID'";
+			$query2= "UPDATE `eventdata` SET `NoOfAvailable`= `NoOfAvailable` - 1 WHERE EventID ='$EventID'";
+                        if(!empty($reservation)){
+				$r = $this->mysqli->multi_query($query) or die($this->mysqli->error.__LINE__);
+                                $r2 = $this->mysqli->multi_query($query2) or die($this->mysqli->error.__LINE__);
+                                
+				$success = array('status' => "Success", "msg" => "Event ".$ReservationID." Updated Successfully.", "data" => $reservation);
+				$this->response($this->json($success),200);
+			}else
+				$this->response('',204);	// "No Content" status
+		}
+
                 
+                           private function updateReservationIncCount(){
+			if($this->get_request_method() != "POST"){
+				$this->response('',406);
+			}
+			$reservation = json_decode(file_get_contents("php://input"),true);
+			$ReservationID = $reservation['resID'];
+                        $Age = (int)$reservation['ageofC'];
+                        $EventID = (int)$reservation['evntID'];
+                        $CandidateName = $reservation['canName'];
+                        $Gender = $reservation['GenCan'];
+                        $Email = $reservation['emailC'];
+                        $GuardianName = $reservation['GrdnName'];
+			$GuardianRelation = $reservation['GrdnRltn'];
+                        $ConfirmationStatus = $reservation['confStatus'];
+                        $AdminIDReservationData = (int) $reservation['admnID'];
+                        $Remarks = $reservation['Rmks'];
+			$CardNumber = $reservation['cardNum'];
+                        $expiryMonth = $reservation['expMon'];			
+                        $expiryYear = $reservation['empYear'];			
+                        $cvv = $reservation['cvvCard'];
+                        $BillingAddress = $reservation['billAddr'];
+                        
+                        $query = "UPDATE `reservationdata` SET `CandidateName` = '$CandidateName', `Gender` = '$Gender', `Age` = '$Age', `Email` = '$Email', `GuardianName` = '$GuardianName', `GuardianRelation` = '$GuardianRelation', `ConfirmationStatus` = '$ConfirmationStatus', `AdminIDReservationData` = '$AdminIDReservationData', `Remarks` = '$Remarks', `BillingAddress` = '$BillingAddress', `CardNumber` = '$CardNumber', `expiryMonth` = '$expiryMonth', `expiryYear` = '$expiryYear', `cvv` = '$cvv' WHERE `reservationdata`.`ReservationID` = '$ReservationID'";
+			$query2= "UPDATE `eventdata` SET `NoOfAvailable`= `NoOfAvailable` + 1 WHERE EventID ='$EventID'";
+                        if(!empty($reservation)){
+				$r = $this->mysqli->multi_query($query) or die($this->mysqli->error.__LINE__);
+                                $r2 = $this->mysqli->multi_query($query2) or die($this->mysqli->error.__LINE__);
+                                
+				$success = array('status' => "Success", "msg" => "Event ".$ReservationID." Updated Successfully.", "data" => $reservation);
+				$this->response($this->json($success),200);
+			}else
+				$this->response('',204);	// "No Content" status
+		}
                 
                 private function registerCandidate(){
                     if($this->get_request_method() != "GET"){
@@ -404,7 +578,9 @@ require_once("Rest.inc.php");
                    $BillingAddress = $this->_request['BillingAddress'];
                    
                   $query = "INSERT INTO `reservationdata` (`ReservationID`, `CandidateName`, `Gender`, `Age`, `Email`, `GuardianName`, `GuardianRelation`, `ConfirmationStatus`, `EventIDReservationData`, `AdminIDReservationData`, `Remarks`, `CardNumber`, `cvv`, `expiryMonth`, `expiryYear`, `BillingAddress`) VALUES ('$ReservationID', '$CandidateName', '$Gender', '$Age', '$Email', '$GuardianName', '$GuardianRelation', '$ConfirmationStatus', '$EventID', NULL, NULL, '$CardNumber', '$cvv', '$expiryMonth', '$expiryYear', '$BillingAddress')";
+                  $query2= "UPDATE `eventdata` SET `NoOfAvailable`= `NoOfAvailable` + 1 WHERE EventID ='$EventID'";
                   $resultData = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+                  $res2 = $this->mysqli->query($query2) or die($this->mysqli->error.__LINE__);
                    $result = array('ReservationID' => $ReservationID);
                     $this ->response($this -> json($result), 200);
                    

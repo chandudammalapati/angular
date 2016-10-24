@@ -10,9 +10,22 @@ recRestApp.controller('listEventCategory' , ['$scope', 'servicesData', function(
         });
         
 }]);
+
+
+
+recRestApp.controller('viewAnnoucementPublic' , ['$scope', 'servicesData', function($scope, servicesData){
+        servicesData.getAnnoucementPublic().then(function (data){
+            //debugger;
+            $scope.annouceDetails = data.data;
+            console.log( $scope.annouceDetails);
+        });
+        
+}]);
+
 recRestApp.controller('ListEventsMatched', ['$scope', '$routeParams', 'servicesData', function ($scope, $routeParams, servicesData){
       
        var categoryName = $routeParams.categoryName;
+       
         //console.log(categoryName);
         servicesData.getEventsList(categoryName).then(function (data){
            
@@ -22,6 +35,25 @@ recRestApp.controller('ListEventsMatched', ['$scope', '$routeParams', 'servicesD
             //console.log($scope.eventListMatched);
         });
 }]);
+
+recRestApp.controller('viewStatus', ['$scope',  'servicesData', function ($scope, servicesData){
+      
+       $scope.regID = null;
+               //debugger;
+       $scope.ReservationMatched =[];
+       
+       $scope.getReservation = function(regID){
+        
+        servicesData.getReservation(regID).then(function (data){
+           //debugger;
+            $scope.ReservationMatched = data.data;
+             
+           // console.log($scope.ReservationMatched);
+        });
+        };  //end of getReservation
+}]);
+
+
 recRestApp.controller('getEventDetails',['$scope', '$routeParams', 'servicesData', function ($scope, $routeParams, servicesData){
         var eventID = $routeParams.eventID;
         console.log(eventID);
@@ -37,7 +69,7 @@ recRestApp.controller('registerSelEvent', ['$scope', '$routeParams', 'servicesDa
         $scope.candidate =[];
         $scope.candidate.Gender = "male";
         $scope.candidate.EventIDReservationData = eventID;
-        $scope.candidate.ConfirmationStatus = "NO";
+        $scope.candidate.ConfirmationStatus = "PENDING";
         //$scope.candidate.gender = 'male';
         console.log("Event Id to be registered is"+eventID);
         function makeid()
@@ -104,6 +136,18 @@ recRestApp.config(['$routeProvider',
         controller: 'listEventCategory',
         controllerAs: 'ListEveCat'
       })
+      .when('/viewStatus',{
+           //title:'View Status',
+           templateUrl: 'templates/viewStatus.html',
+           controller: 'viewStatus',
+           controllerAs: 'vwStat'
+       })
+       .when('/viewAnnoucementPublic',{
+           //title:'View Status',
+           templateUrl: 'templates/viewAnnouncementPublic.html',
+           controller: 'viewAnnoucementPublic',
+           controllerAs: 'vwAnncPblic'
+       })
       .when('/getEvents/:categoryName', {
         //title: 'GetEvents',
         templateUrl: 'templates/getEventsMatched.html',
@@ -130,7 +174,8 @@ recRestApp.config(['$routeProvider',
            controller: 'successRegister',
            controllerAs: 'sucReg'
        })
-      
+       
+       
       .otherwise({
         redirectTo: '/'
       });
